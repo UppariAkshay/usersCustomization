@@ -22,6 +22,20 @@ function App() {
   }, [])
 
 
+  const deleteUser = async (id) => {
+    const options = {
+      method: 'DELETE'
+    }
+    const response = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`, options)
+    const responseData = await response.json()
+
+    console.log(responseData)
+
+    if (response.ok)
+    {
+      setAllUsersList(prevState => prevState.filter(eachUser => eachUser.id !== id))
+    }
+  }
 
   const onClickAddNewUser = async () => {
     const options = {
@@ -51,7 +65,7 @@ function App() {
       <td>{userDetails.address.city}</td>
       <td>{userDetails.company.name}</td>
       <td>{userDetails.website}</td>
-      <td><button className='btn btn-dark'>Edit</button> <button className='btn btn-danger'>Delete</button></td>
+      <td><button className='btn btn-dark'>Edit</button> <button onClick={() => deleteUser(userDetails.id)} className='btn btn-danger'>Delete</button></td>
     </tr>
   }
 
