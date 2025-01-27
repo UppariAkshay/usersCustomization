@@ -5,6 +5,7 @@ function App() {
   const [allUsersList, setAllUsersList] = useState([])
   const [newUserDetails, setNewUserDetails] = useState([])
   const [editUserID, setEditUserID] = useState({})
+  const [errorMessage, setErrorMessage] = useState('Error')
 
 
 
@@ -18,6 +19,10 @@ function App() {
       if (response.ok)
       {
         setAllUsersList(responseData)
+        setErrorMessage('')
+      }
+      else{
+        setErrorMessage('Users Data Not Available')
       }
     }
 
@@ -128,7 +133,7 @@ function App() {
 
       {/* add new user */}
       <h1 className='text-start'>Add New User</h1>
-      
+
       <form className='d-flex mb-5 mt-3'>
         <input onChange={(e) => setNewUserDetails(prevState => ({...prevState, name: e.target.value}))} className='form-control' type='text' placeholder='Enter Name' />
         <input onChange={(e) => setNewUserDetails(prevState => ({...prevState, username: e.target.value}))} className='form-control' type='text' placeholder='Enter user name' />
@@ -156,6 +161,9 @@ function App() {
             <th scope='col'>Action</th>
           </tr>
         </thead>
+
+                {/*Error Message When user data not available*/}
+                {errorMessage && <h1 className='text-center text-danger'>{errorMessage}</h1>}
 
         <tbody>
           {
