@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 
 function App() {
   const [allUsersList, setAllUsersList] = useState([])
-
+  const [newUserDetails, setNewUserDetails] = useState([])
 
 
 
@@ -22,7 +22,25 @@ function App() {
   }, [])
 
 
-  
+
+  const onClickAddNewUser = async () => {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newUserDetails)
+    }
+    const response = await fetch('https://jsonplaceholder.typicode.com/users',options )
+    const responseData = await response.json()
+    
+    console.log(responseData)
+
+    if (response.ok)
+    {
+      setAllUsersList(prevState => ([...prevState, responseData]))
+    }
+  }
 
   const displayUser = (userDetails) => {
     return <tr>
@@ -41,6 +59,19 @@ function App() {
     <div className="App">
 
       <h1>User Details</h1>
+
+      <h1 className='text-start'>Add New User</h1>
+      <form className='d-flex mb-5 mt-3'>
+        <input onChange={(e) => setNewUserDetails(prevState => ({...prevState, name: e.target.value}))} className='form-control' type='text' placeholder='Enter Name' />
+        <input onChange={(e) => setNewUserDetails(prevState => ({...prevState, username: e.target.value}))} className='form-control' type='text' placeholder='Enter user name' />
+        <input onChange={(e) => setNewUserDetails(prevState => ({...prevState, phone: e.target.value}))} className='form-control' type='text' placeholder='Enter Phone' />
+        <input onChange={(e) => setNewUserDetails(prevState => ({...prevState, email: e.target.value}))} className='form-control' type='text' placeholder='Enter Email' />
+        <input onChange={(e) => setNewUserDetails(prevState => ({...prevState, address: {city: e.target.value}}))} className='form-control' type='text' placeholder='Enter Address' />
+        <input onChange={(e) => setNewUserDetails(prevState => ({...prevState, company: {name: e.target.value}}))} className='form-control' type='text' placeholder='Enter Company Name' />
+        <input onChange={(e) => setNewUserDetails(prevState => ({...prevState, website: e.target.value}))} className='form-control' type='text' placeholder='Enter Website' />
+        <button type='button' onClick={() => onClickAddNewUser() } className='btn btn-success'>ADD</button>
+      </form>
+
 
       <table className='table table-striped mt-5'>
 
