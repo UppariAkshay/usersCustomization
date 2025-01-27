@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react'
 function App() {
   const [allUsersList, setAllUsersList] = useState([])
   const [newUserDetails, setNewUserDetails] = useState([])
+  const [editUserID, setEditUserID] = useState({})
+
+
 
 
 
@@ -21,6 +24,10 @@ function App() {
     fetchUsers()
   }, [])
 
+
+
+
+  // user ADD,UDATE,DELETE methods
 
   const deleteUser = async (id) => {
     const options = {
@@ -53,8 +60,39 @@ function App() {
     if (response.ok)
     {
       setAllUsersList(prevState => ([...prevState, responseData]))
+      setNewUserDetails()
     }
   }
+
+  const onClickUpdate = async () => {
+    const options = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newUserDetails)
+    }
+
+    const response = await fetch(`https://jsonplaceholder.typicode.com/users/${editUserID}`, options)
+    const responseData = await response.json()
+    console.log(responseData)
+
+    // here responseData is not generating expected output for new users
+    if (response.ok)
+    {
+        setAllUsersList(prevState => prevState.map(eachUser => eachUser.id === responseData.id ? responseData : eachUser)) // so using new user data from state 
+        setEditUserID(-1)
+    }
+}
+
+  const onClickEditUser = (userDetails) => {
+    setEditUserID(userDetails.id)
+    setNewUserDetails(userDetails)
+  }
+
+
+
+  // displayFormat Methods
 
   const displayUser = (userDetails) => {
     return <tr>
@@ -65,8 +103,23 @@ function App() {
       <td>{userDetails.address.city}</td>
       <td>{userDetails.company.name}</td>
       <td>{userDetails.website}</td>
-      <td><button className='btn btn-dark'>Edit</button> <button onClick={() => deleteUser(userDetails.id)} className='btn btn-danger'>Delete</button></td>
+      <td><button onClick={() => onClickEditUser(userDetails) } className='btn btn-dark'>Edit</button> <button onClick={() => deleteUser(userDetails.id)} className='btn btn-danger'>Delete</button></td>
     </tr>
+  }
+
+  const displayUserInEditFormat = () => {
+  return (
+    <tr>
+         <td><input onChange={(e) => setNewUserDetails(prevState => ({...prevState, name: e.target.value}))} className='form-control' value={newUserDetails.name} type='text' placeholder='Enter Name' /></td>
+         <td><input onChange={(e) => setNewUserDetails(prevState => ({...prevState, username: e.target.value}))} className='form-control' value={newUserDetails.username}  type='text' placeholder='Enter user name' /></td>
+         <td><input onChange={(e) => setNewUserDetails(prevState => ({...prevState, phone: e.target.value}))} className='form-control' value={newUserDetails.phone} type='text' placeholder='Enter Phone' /></td>
+         <td><input onChange={(e) => setNewUserDetails(prevState => ({...prevState, email: e.target.value}))} className='form-control' value={newUserDetails.email} type='text' placeholder='Enter Email' /></td>
+         <td><input onChange={(e) => setNewUserDetails(prevState => ({...prevState, address: {city: e.target.value}}))} className='form-control' value={newUserDetails.address.city} type='text' placeholder='Enter Address' /></td>
+         <td><input onChange={(e) => setNewUserDetails(prevState => ({...prevState, company: {name: e.target.value}}))} className='form-control' value={newUserDetails.company.name} type='text' placeholder='Enter Company Name' /></td>
+         <td><input onChange={(e) => setNewUserDetails(prevState => ({...prevState, website: e.target.value}))} className='form-control' value={newUserDetails.website} type='text' placeholder='Enter Website' /></td>
+         <td><button type='button' onClick={onClickUpdate} className='btn btn-warning'>Update</button></td>
+    </tr>
+  )
   }
 
   return (
@@ -104,7 +157,7 @@ function App() {
 
         <tbody>
           {
-            allUsersList.map(eachUser => displayUser(eachUser) )
+            allUsersList.map(eachUser => eachUser.id===editUserID ? displayUserInEditFormat(eachUser) : displayUser(eachUser) )
           }
         </tbody>
 
