@@ -124,10 +124,11 @@ function App() {
 
   return (
     <div className="App">
-
       <h1>User Details</h1>
 
+      {/* add new user */}
       <h1 className='text-start'>Add New User</h1>
+      
       <form className='d-flex mb-5 mt-3'>
         <input onChange={(e) => setNewUserDetails(prevState => ({...prevState, name: e.target.value}))} className='form-control' type='text' placeholder='Enter Name' />
         <input onChange={(e) => setNewUserDetails(prevState => ({...prevState, username: e.target.value}))} className='form-control' type='text' placeholder='Enter user name' />
@@ -140,6 +141,7 @@ function App() {
       </form>
 
 
+      {/* Display All users*/}
       <table className='table table-striped mt-5'>
 
         <thead>
