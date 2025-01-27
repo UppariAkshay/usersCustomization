@@ -5,7 +5,7 @@ function App() {
   const [allUsersList, setAllUsersList] = useState([])
   const [newUserDetails, setNewUserDetails] = useState([])
   const [editUserID, setEditUserID] = useState({})
-  const [errorMessage, setErrorMessage] = useState('Error')
+  const [errorMessage, setErrorMessage] = useState('')
 
 
 
